@@ -2,7 +2,7 @@
     margin: auto;
     background: whitesmoke;
     text-align: center;
-    width: 50%;
+    width: 75%;
     border-radius: 15px;
     box-shadow: 1px 10px 15px -3px rgba(0, 0, 0, 0.1), 1px 10px 15px -3px rgba(0, 0, 0, 0.1), 5px 10px 15px -3px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -207,4 +207,9 @@ button:hover {
 .close-btn {
     background-color: #dc3545; 
     color: white; 
+}
+.task-date {
+    font-size: 12px; /* Smaller font for date */
+    color: gray; /* Color for date text */
+    margin-left: 10px; /* Space between task content and date */
 }
