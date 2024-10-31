@@ -57,17 +57,23 @@ document.addEventListener("DOMContentLoaded", () => {
         taskContent.classList.add("task-content");
         taskContent.innerText = truncatedText;
 
+        // Create a new span for the date and time
+        const taskDate = document.createElement("span");
+        taskDate.classList.add("task-date");
+        taskDate.innerText = new Date().toLocaleString(); // Get current date and time
+
         taskItem.appendChild(taskContent); // Append task content to task item
+        taskItem.appendChild(taskDate); // Append date and time to task item
 
         // Move edit and delete buttons to the end
         const editButton = document.createElement("img");
-        editButton.src = "edit.png"; // Ensure this path is correct
+        editButton.src = "/image/edit.png"; // Ensure this path is correct
         editButton.alt = "Edit Task";
         editButton.classList.add("edit-btn");
         editButton.addEventListener("click", () => editTask(taskItem, taskContent));
 
         const deleteButton = document.createElement("img");
-        deleteButton.src = "delete.png"; // Ensure this path is correct
+        deleteButton.src = "/image/delete.png"; // Ensure this path is correct
         deleteButton.alt = "Delete Task";
         deleteButton.classList.add("delete-btn");
         deleteButton.addEventListener("click", () => {
@@ -156,7 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
         taskItems.forEach(item => {
             const checkbox = item.querySelector(".task-checkbox");
             const taskContent = item.querySelector(".task-content");
-            tasks.push({ text: taskContent.innerText.replace("...", ""), completed: checkbox.checked }); // Remove "..." before saving
+            const taskDate = item.querySelector(".task-date");
+            tasks.push({
+                text: taskContent.innerText.replace("...", ""), // Remove "..." before saving
+                completed: checkbox.checked,
+                createdAt: taskDate.innerText // Save date and time as well
+            });
         });
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
