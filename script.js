@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const currentDateTime = formatDateTime(new Date());
             addTask(taskText, false, currentDateTime); // Pass the formatted date and time
             taskInput.value = ""; // Clear input after adding
-            saveTasks(); // Save to localStorage
+            saveTasks(); 
         }
     });
 
@@ -89,13 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Move edit and delete buttons to the end
         const editButton = document.createElement("img");
-        editButton.src = "edit.png"; // Ensure this path is correct
+        editButton.src = "/image/edit.png"; // Ensure this path is correct
         editButton.alt = "Edit Task";
         editButton.classList.add("edit-btn");
         editButton.addEventListener("click", () => editTask(taskItem, taskContent));
 
         const deleteButton = document.createElement("img");
-        deleteButton.src = "delete.png"; // Ensure this path is correct
+        deleteButton.src = "/image/delete.png"; // Ensure this path is correct
         deleteButton.alt = "Delete Task";
         deleteButton.classList.add("delete-btn");
         deleteButton.addEventListener("click", () => {
@@ -190,19 +190,211 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         localStorage.setItem("tasks", JSON.stringify(tasks));
     }
-
+    
     // Function to Load Tasks from localStorage
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        
+
         // Check if there are no tasks and show the empty message
         if (tasks.length === 0) {
-            emptyMessage.style.display = "block";
+            document.querySelector(".empty-message").style.display = "block";
+          
         } else {
-            emptyMessage.style.display = "none";
+            document.querySelector(".empty-message").style.display = "none";
+            
+
+            console.log("p")
             tasks.forEach(task => {
                 addTask(task.text, task.completed, task.createdAt); // Pass saved date and time
             });
         }
     }
 });
+const popup_d = document.querySelector(".drawing-popup");
+popup_d.style.display = 'none';
+
+document.getElementById('hw').addEventListener('click', function () {
+    popup_d.style.display = 'flex';
+});
+
+document.querySelector(".close1-btn").addEventListener('click', function () {
+    popup_d.style.display = 'none';
+
+});
+
+const canvas = document.getElementById('drawingCanvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let eraserMode = false;
+
+// Start drawing
+canvas.addEventListener('mousedown', () => {
+    drawing = true;
+});
+
+canvas.addEventListener('mousemove', draw);
+
+function draw(event) {
+    if (!drawing) return;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+
+    if (eraserMode) {
+        ctx.clearRect(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop, 4, 4);
+    }
+    else {
+        ctx.strokeStyle = 'black'
+
+        // Draw line based on cursor position
+        ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    }
+}
+
+// Stop drawing
+canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    ctx.beginPath();
+});
+
+// Capture and display the drawing in the sidebar
+function submitDrawing() {
+    document.querySelector(".drawing-popup").style.display = 'none';
+    document.querySelector(".empty-message").style.display = 'none';
+
+    const imageURL = canvas.toDataURL('image/png');
+
+    // Create a new image element for each submitted drawing
+    const newImageContainer = document.createElement('li');
+    newImageContainer.style.marginBottom = '10px';
+
+    const newImage = document.createElement('img');
+    newImage.src = imageURL;
+    newImage.alt = 'Submitted Drawing';
+    newImage.style.maxWidth = '50%';
+    newImage.style.border ="1px solid gray";
+    newImage.style.borderRadius = "12px"
+    newImage.style.margin ="9px"
+    newImage.style.boxShadow ="1px 8px 15px -3px rgba(0, 0, 0, 0.1), 1px 8px 15px -3px rgba(0, 0, 0, 0.1), 5px 8px 15px -3px rgba(0, 0, 0, 0.1)"
+    
+
+    // Create a delete button
+    const deleteButton = document.createElement("img");
+        deleteButton.src = "/image/delete.png"; // Ensure this path is correct
+        deleteButton.alt = "Delete Task";
+        deleteButton.classList.add("delete-btn");
+    deleteButton.onclick = function () {
+        deleteDrawing(imageURL, newImageContainer);
+    };
+
+    // Append the new image and delete button to the container
+    newImageContainer.appendChild(newImage);
+    newImageContainer.appendChild(deleteButton);
+
+    // Append the container to the sidebar
+    const imgcont = document.querySelector(".task-list");
+
+    imgcont.appendChild(newImageContainer);
+
+    // Save to local storage
+    saveDrawing(imageURL);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+document.querySelector(".submit-btn").addEventListener('click', submitDrawing);
+
+
+// Clear the entire canvas
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+document.querySelector(".reset-btn").addEventListener('click', clearCanvas);
+document.querySelector(".pencil-btn").addEventListener('click',function(){eraserMode = false});
+// Toggle eraser mode
+function toggleEraser() {
+    eraserMode = !eraserMode;
+    if (eraserMode) {
+        alert('Eraser mode activated. Draw with white to erase.');
+    } else {
+        alert('Drawing mode activated. Draw with black color.');
+    }
+}
+
+document.querySelector(".eraser-btn").addEventListener('click', toggleEraser);
+
+
+// Save drawing to local storage
+function saveDrawing(imageURL) {
+    let savedDrawings = JSON.parse(localStorage.getItem('drawings')) || [];
+    savedDrawings.push(imageURL);
+    localStorage.setItem('drawings', JSON.stringify(savedDrawings));
+}
+
+// Load drawings from local storage
+function loadDrawings() {
+
+
+    const savedDrawings = JSON.parse(localStorage.getItem('drawings')) || [];
+    const sidebar = document.querySelector('.task-list');
+    if (savedDrawings.length === 0 && task.length === 0) {
+        document.querySelector(".empty-message").style.display = "block";
+    } else {
+        document.querySelector(".empty-message").style.display = "none";
+        savedDrawings.forEach(imageURL => {
+            const newImageContainer = document.createElement('li');
+            newImageContainer.style.marginBottom = '10px';
+
+            const newImage = document.createElement('img');
+            newImage.src = imageURL;
+            newImage.alt = 'Submitted Drawing';
+            newImage.style.maxWidth = '50%';
+            newImage.style.border ="1px solid gray";
+            newImage.style.borderRadius = "12px"
+            newImage.style.margin ="9px"
+            newImage.style.boxShadow ="1px 8px 15px -3px rgba(0, 0, 0, 0.1), 1px 8px 15px -3px rgba(0, 0, 0, 0.1), 5px 8px 15px -3px rgba(0, 0, 0, 0.1)"
+            
+
+            // Create a delete button
+            const deleteButton = document.createElement("img");
+            deleteButton.src = "/image/delete.png"; // Ensure this path is correct
+            deleteButton.alt = "Delete Task";
+            deleteButton.classList.add("delete-btn");
+            deleteButton.onclick = function () {
+                deleteDrawing(imageURL, newImageContainer);
+            };
+
+            // Append the new image and delete button to the container
+            newImageContainer.appendChild(newImage);
+            newImageContainer.appendChild(deleteButton);
+
+            // Append the container to the sidebar
+            sidebar.appendChild(newImageContainer);
+        });
+
+        if (savedDrawings.length > 0) {
+            document.querySelector(".empty-message").style.display = 'none';
+        }
+    }
+}
+
+// Delete drawing from the sidebar and local storage
+function deleteDrawing(imageURL, container) {
+    // Remove the image container from the sidebar
+    container.remove();
+
+    // Update local storage
+    let savedDrawings = JSON.parse(localStorage.getItem('drawings')) || [];
+    savedDrawings = savedDrawings.filter(url => url !== imageURL);
+    localStorage.setItem('drawings', JSON.stringify(savedDrawings));
+
+    // Check if there are still images left
+    if (savedDrawings.length === 0) {
+        document.querySelector(".empty-message").style.display = 'block';
+    }
+}
+
+// Load drawings when the page loads
+window.onload = loadDrawings;
