@@ -89,13 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Move edit and delete buttons to the end
         const editButton = document.createElement("img");
-        editButton.src = "/image/edit.png"; // Ensure this path is correct
+        editButton.src = "edit.png"; // Ensure this path is correct
         editButton.alt = "Edit Task";
         editButton.classList.add("edit-btn");
         editButton.addEventListener("click", () => editTask(taskItem, taskContent));
 
         const deleteButton = document.createElement("img");
-        deleteButton.src = "/image/delete.png"; // Ensure this path is correct
+        deleteButton.src = "delete.png"; // Ensure this path is correct
         deleteButton.alt = "Delete Task";
         deleteButton.classList.add("delete-btn");
         deleteButton.addEventListener("click", () => {
@@ -282,7 +282,7 @@ function submitDrawing() {
 
     // Create a delete button
     const deleteButton = document.createElement("img");
-        deleteButton.src = "/image/delete.png"; // Ensure this path is correct
+        deleteButton.src = "delete.png"; // Ensure this path is correct
         deleteButton.alt = "Delete Task";
         deleteButton.classList.add("delete-btn");
     deleteButton.onclick = function () {
@@ -359,7 +359,7 @@ function loadDrawings() {
 
             // Create a delete button
             const deleteButton = document.createElement("img");
-            deleteButton.src = "/image/delete.png"; // Ensure this path is correct
+            deleteButton.src = "delete.png"; // Ensure this path is correct
             deleteButton.alt = "Delete Task";
             deleteButton.classList.add("delete-btn");
             deleteButton.onclick = function () {
